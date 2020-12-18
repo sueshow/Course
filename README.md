@@ -1,7 +1,10 @@
 # Project
 
 ## 實價登錄資料：Crawl + Text Mining in R
-詳細參考如下：
-* Crawl：網址為 https://plvr.land.moi.gov.tw/DownloadOpenData
-* Text Mining：https://github.com/sueshow/R_Text-Mining
+* Crawl：
+  * 資料網址：https://plvr.land.moi.gov.tw/DownloadOpenData
+  * Code：Proj_實價登錄資料.R
+* Text Mining：
+  * 重點回顧：https://github.com/sueshow/R_Text-Mining
+  * Code：Proj_地址.R
 
