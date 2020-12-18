@@ -415,7 +415,7 @@ rm(final_rented, final_selled_land, final_selled_build)
 #dbGetQuery(conn, "grant all on table ttemp.atul_rent_prc_of_real_estate_cln to dw_dev_group")
 #dbGetQuery(conn, "grant all on table ttemp.atul_sell_prc_of_real_estate_cln to dw_dev_group")
 
-
+# 砍連線
 #dbDisconnect(conn)
 
 
