@@ -94,7 +94,7 @@ file_path <- list.files( path, pattern="raddr_road.txt" )
 seg <- worker( bylines=F, symbol=T, user=file_path)
 word <- lapply( data_manual$addr, function(x) paste(segment(x, seg), collapse=" ") )
 
-#i <- 38
+#i <- 17
 data_manual[, "word"] <- NA
 for(i in 1:nrow(data_manual)){
   data_manual$word[i] <- paste( segment(data_manual$addr[i], seg), collapse=" ")    
@@ -185,16 +185,24 @@ for(i in 1:nrow(data_manual)){
 }
 
 
-#去除「之X」(待確認)
+#去除「之X」，無法去除「之X~X」
 data_manual[, "num_int2"] <- NA
 for(i in 1:nrow(data_manual)){
-  tmp <- unlist( regmatches(data_manual$road_oth[i], gregexpr("\\.*[之][[:digit:]]+", data_manual$num_int[i] )))
+  tmp <- unlist( regmatches(data_manual$num_int[i], gregexpr("\\.*[之][[:digit:]]+", data_manual$num_int[i] )))
   
-  
-  data_manual$num_int2[i] <- paste( unlist(regmatches(data_manual$num_int[i], gregexpr("[[:digit:]]+\\.*[[:digit:]]*", data_manual$num_int[i] ))), collapse="," )
-}
+  if(length(tmp)!=0){
+    num_int <- data_manual$num_int[i]
+    for(j in 1:length(tmp)){
+      num <- sub(tmp[j], "", num_int)
+      num_int <- num
+    }
+    data_manual$num_int2[i] <- paste( unlist(regmatches(num_int, gregexpr("[[:digit:]]+\\.*[[:digit:]]*", num_int ))), collapse="," )
+    
+  }else{
+    data_manual$num_int2[i] <- paste( unlist(regmatches(data_manual$num_int[i], gregexpr("[[:digit:]]+\\.*[[:digit:]]*", data_manual$num_int[i] ))), collapse="," )
+  }
 
-gsub(tmp, "", data_manual$num_int[i])
+}
 
 
 data_manual[, "sign"] <- NA
@@ -203,6 +211,7 @@ for(i in 1:nrow(data_manual)){
 }
 
 
+#待確認
 data_manual[, "num_array"] <- NA
 for(i in 1:nrow(data_manual)){
   
