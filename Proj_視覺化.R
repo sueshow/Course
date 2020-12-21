@@ -93,7 +93,7 @@ NewTaipei_plot <-
   ggplot( aes(x=鄉鎮市區,y=平均單價) ) +
   geom_bar( stat="identity", aes(fill=平均單價) ) +
   geom_text( aes(label=paste0(round(平均單價/10000, 2), "萬")),
-             hjust=1, col="white", family="A" )
+             hjust=1, col="white", family="A" ) +
   #geom_text( label=paste0(round(NewTaipei_data$平均單價/10000,2),"萬"),
   #           nudge_y=-min(NewTaipei_data$平均單價)/2.5, col="white", family="A" ) +
   scale_fill_gradient( low="#D999BF", high="#ec008c", na.value=NA ) +
@@ -117,3 +117,81 @@ NewTaipei_plot <-
 
 Taipei_plot
 NewTaipei_plot
+
+
+
+#################### 視覺化(bar) ####################
+#租賃資料
+g_data2 <- base_data %>% 
+                group_by(都市土地使用分區) %>% 
+                summarise(次數=n(), 平均單價=mean(單價元坪))
+
+#只看商業用途
+busi <- subset( g_data2, 都市土地使用分區=="商") %>% 
+           group_by(鄉鎮市區) %>% 
+           summarise(筆數=n(), 平均單價=mean(單價元坪))
+
+busi$鄉鎮市區 <- factor( busi$鄉鎮市區, levels=busi$鄉鎮市區[order(busi$平均單價)] )
+
+rent_for_busi <-
+  busi %>%
+  ggplot( aes(x=鄉鎮市區,y=平均單價) ) +
+  geom_bar( stat="identity", aes(fill=平均單價) ) +
+  geom_text( aes(label=paste0(round(平均單價/10000, 2), "萬")),
+             hjust=1, col="white", family="A", size=3.5 ) +
+#geom_text( label=paste0(round(NewTaipei_data$平均單價/10000,2),"萬"),
+#           nudge_y=-min(NewTaipei_data$平均單價)/2.5, col="white", family="A" ) +
+  scale_fill_gradient( low="#D999BF", high="#ec008c", na.value=NA ) +
+  labs( title="「台北市」各區平均單價(坪)",
+        subtitle="類別：=「租賃」「商業用途」") +
+  coord_flip() +
+  theme(
+    axis.text.x = element_text(face="bold", size=12, angle=360, color="#ffffff"), 
+    axis.text.y = element_text(face="bold", size=8, color="#ffffff"),
+    axis.title.x = element_text(hjust=0.5, color="#87286E", face="bold", size=15, family="A"), 
+    axis.title.y = element_text(hjust=0.5, color="#87286E", angle=90, face="bold", size=15, family="A"),
+    panel.background = element_rect(fill="#ffffff", color="#000000", col="red"),
+    plot.background = element_rect("#87286E"),
+    #panel.grid.major = element_blank(),
+    plot.title = element_text(hjust=0.5, face="bold", size=16, family="A", color="#ffffff"),
+    plot.subtitle = element_text(hjust=0.5, face="bold", size=10, family="A", color="#ffffff"),
+    legend.text = element_text(family="A", color="#ffffff", face="bold"),
+    legend.title = element_text(family="A", color="#ffffff", face="bold"),
+    legend.background = element_rect("#D04EA2") 
+
+    
+#只看居住用途
+live <- subset( g_data2, 都市土地使用分區=="住") %>% 
+           group_by(鄉鎮市區) %>% 
+           summarise(筆數=n(), 平均單價=mean(單價元坪))
+    
+live$鄉鎮市區 <- factor( live$鄉鎮市區, levels=live$鄉鎮市區[order(live$平均單價)] )
+    
+rent_for_live <-
+    live %>%
+    ggplot( aes(x=鄉鎮市區,y=平均單價) ) +
+    geom_bar( stat="identity", aes(fill=平均單價) ) +
+    geom_text( aes(label=paste0(round(平均單價/10000, 2), "萬")),
+               hjust=1, col="white", family="A", size=3.5 ) +
+    #geom_text( label=paste0(round(NewTaipei_data$平均單價/10000,2),"萬"),
+    #           nudge_y=-min(NewTaipei_data$平均單價)/2.5, col="white", family="A" ) +
+    scale_fill_gradient( low="#D999BF", high="#ec008c", na.value=NA ) +
+    labs( title="「台北市」各區平均單價(坪)",
+          subtitle="類別：=「租賃」「居住用途」") +
+    coord_flip() +
+    theme(
+      axis.text.x = element_text(face="bold", size=12, angle=360, color="#ffffff"), 
+      axis.text.y = element_text(face="bold", size=8, color="#ffffff"),
+      axis.title.x = element_text(hjust=0.5, color="#87286E", face="bold", size=15, family="A"), 
+      axis.title.y = element_text(hjust=0.5, color="#87286E", angle=90, face="bold", size=15, family="A"),
+      panel.background = element_rect(fill="#ffffff", color="#000000", col="red"),
+      plot.background = element_rect("#87286E"),
+      #panel.grid.major = element_blank(),
+      plot.title = element_text(hjust=0.5, face="bold", size=16, family="A", color="#ffffff"),
+      plot.subtitle = element_text(hjust=0.5, face="bold", size=10, family="A", color="#ffffff"),
+      legend.text = element_text(family="A", color="#ffffff", face="bold"),
+      legend.title = element_text(family="A", color="#ffffff", face="bold"),
+      legend.background = element_rect("#D04EA2") 
+
+rent_for_busi
+rent_for_live
