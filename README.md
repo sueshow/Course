@@ -1,7 +1,9 @@
 # Project
 
 ## 率的資料：In R
-* Mann Kendall Trend Test：https://github.com/sueshow/R_Data-Visualization
+* Mann Kendall Trend Test：
+  * 相關資料：https://github.com/sueshow/R_Data-Visualization
+  * Code：Proj_Mann Kendall Tend Test.R
 * 參考資料
   * https://www.statisticshowto.com/mann-kendall-trend-test/
   * https://cran.r-project.org/web/packages/trend/vignettes/trend.pdf
