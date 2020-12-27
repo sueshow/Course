@@ -1,7 +1,11 @@
 # Project
 
 ## 率的資料：In R
-* Mann Kendall Tend Test：
+* Mann Kendall Trend Test：https://github.com/sueshow/R_Data-Visualization
+* 參考資料
+  * https://www.statisticshowto.com/mann-kendall-trend-test/
+  * https://cran.r-project.org/web/packages/trend/vignettes/trend.pdf
+<br>
 
 ## 實價登錄資料：In R
 * Crawl：
@@ -14,4 +18,4 @@
   * Code：Proj_視覺化.R
 * 參考資料
   * 全國路名資料：https://data.gov.tw/dataset/35321
-
+<br>
