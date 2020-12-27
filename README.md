@@ -1,6 +1,9 @@
 # Project
 
-## 實價登錄資料：Crawl + Text Mining in R
+## 率的資料：In R
+* Mann Kendall Tend Test：
+
+## 實價登錄資料：In R
 * Crawl：
   * 資料網址：https://plvr.land.moi.gov.tw/DownloadOpenData
   * Code：Proj_實價登錄資料.R
