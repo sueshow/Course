@@ -1,6 +1,6 @@
 # Project
 
-## 率的資料：In R
+## 趨勢：In R
 * Mann Kendall Trend Test：
   * 相關資料：https://github.com/sueshow/R_Data-Visualization
   * Code：Proj_Mann Kendall Tend Test.R
