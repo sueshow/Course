@@ -5,6 +5,7 @@ rm(list=ls())
 #library(magrittr)
 # Read data
 library(stringr)
+library(readxl)
 #library(RPostgreSQL)
 #library(dplyr)
 #library(plyr)
@@ -20,11 +21,17 @@ work_path <- getwd()
 name <- "109S3"
 
 # Set zip path
-file_path <- file.path(work_path, paste0("lvr_langcsv_", name))
+#csv
+#file_path <- file.path(work_path, paste0("lvr_langcsv_", name))
+#xls
+file_path <- file.path(work_path, paste0("lvr_langxls_", name))
 
 # Download
 res <- tryCatch({
-  url <- paste("https://plvr.land.moi.gov.tw//DownloadSeason?season=", name, "&type=zip&fileName=lvr_landcsv.zip", sep="")
+  #csv
+  #url <- paste("https://plvr.land.moi.gov.tw//DownloadSeason?season=", name, "&type=zip&fileName=lvr_landcsv.zip", sep="")
+  #xls
+  url <- paste("https://plvr.land.moi.gov.tw//DownloadSeason?season=", name, "&type=zip&fileName=lvr_landxls.zip", sep="")
   download.file(url, paste0(file_path, ".zip"))
 },
 #遇到 warning 時的自訂處理函數
