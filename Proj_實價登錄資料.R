@@ -101,9 +101,10 @@ selled_build_extate <- c("township", "transaction_sign", "target_position", "lan
                    "building_area", "att_building_area", "balcony_area", "elevator")
 
 
+# Read CSV
 #colname <- selled_extate
 #file <- str_remove(file_list[1], '.csv')
-read_file = function(file, colname){
+read_csv_file = function(file, colname){
   data <- readLines(file.path(file_path, paste0(file, ".csv")), encoding='UTF-8')
   data <- data[-2]
   final <- read.csv(textConnection(data), header=TRUE, stringsAsFactors=FALSE )
@@ -119,6 +120,33 @@ read_file = function(file, colname){
   return(final)
 }
 
+# Read XLS
+read_xls_file = function(file, colname){
+  if (toupper(substr(file, nchar(file), nchar(file)))==toupper('C')){
+    data <- read_excel(file.path(filepath,paste0(file, ".xls")), sheet="不動產租賃")
+  }else if (toupper(substr(file, nchar(file), nchar(file)))==toupper('B')){
+    data <- read_excel(file.path(filepath,paste0(file, ".xls")), sheet="預售屋買賣")
+  }else{
+    data <- read_excel(file.path(filepath,paste0(file, ".xls")), sheet="不動產買賣")
+  }
+  data <- data[-1,]                                          ## Drop englinsh column
+  #final = read.csv(textConnection(data), header = TRUE, stringsAsFactors = FALSE)
+  final <- data
+  names(final) <- colname                                   ## Give English name
+  #myLetters <- letters[1:26]
+  #id <- paste0(name, str_pad(match(substr(file, nchar(file), nchar(file)), myLetters),2, pad = "0"),str_pad(rep(1:nrow(final)), 6, pad = "0"))
+  id <- paste0(name , toupper(substr(file, 1, 1))
+               , toupper(substr(file, nchar(file), nchar(file)))
+               , str_pad(rep(1:nrow(final)), 6, pad = "0")) ## Give id by row
+  final$datanm <- rep(file, nrow(final))                    ## add column of source file
+  year <- as.character(substr(name, 1, 3))
+  session <- substr(name, nchar(name), nchar(name))
+  final <- data.frame(id, year, session, final)
+  return(final)
+  
+}
+
+
 # 給定欄位型態
 ##如放在同一個Table這一段不需執行
 final_rented <- data.frame()
@@ -133,13 +161,13 @@ for(i in c(1:length(file_list))){
   if(toupper(substr(file, nchar(file), nchar(file)))==toupper('C')){
     # For Rented Real Estate Category 'C'
     # Without the column of whether there is attaches the furniture
-    final <- read_file(file, rented_extate)
+    final <- read_csv_file(file, rented_extate)
     final_rented <- rbind(final_rented, final)
   }else if(toupper(substr(file, nchar(file), nchar(file)))==toupper('B')){
-    final <- read_file(file, selled_land_extate)
+    final <- read_csv_file(file, selled_land_extate)
     final_selled_land <- rbind(final_selled_land, final)    
   }else{
-    final <- read_file(file, selled_build_extate)
+    final <- read_csv_file(file, selled_build_extate)
     final_selled_build <- rbind(final_selled_build, final)       
   }
 }
