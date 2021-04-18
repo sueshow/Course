@@ -13,7 +13,7 @@ library(readxl)
 # Environment
 setwd("D:\\資料分析彙整\\Project\\TS_Crawl\\Raw Data")
 #conn = dbConnect(dbDriver("PostgreSQL"), dbname="dwprod",
-#                 host="172.16.7.33", port=5432,
+#                 host="XXX.XXX.XXX.XXX", port=XXXX,
 #                 user="", password="")
 
 # Parameter
@@ -56,7 +56,7 @@ if(res != "NA"){
   con <- unzip(paste0(file_path, ".zip"), exdir=file_path)  
 }
 
-# Read data for sell(新成屋、預售屋)
+# Read data for sell(新成屋、預售屋、土地)
 file_list <- list.files(file_path, pattern='^[f|a].*_[a-z].csv')
 
 # Column name of Table
@@ -156,7 +156,8 @@ final_selled_build <- data.frame()
 #i <- 1
 for(i in c(1:length(file_list))){
   
-  file <- str_remove(file_list[i], '.csv')
+  #file <- str_remove(file_list[i], '.csv')
+  file <- str_remove(file_list[i], '.xls')
   
   if(toupper(substr(file, nchar(file), nchar(file)))==toupper('C')){
     # For Rented Real Estate Category 'C'
@@ -213,6 +214,11 @@ for(i in c(1:length(file_list))){
 #                             , note="text"
 #                             , serial_number="bpchar(20)"
 #                             , datanm="bpchar(12)"
+#
+#                             , main_buid_area="numeric(20,2)"
+#                             , subs_buid_area="numeric(20,2)"
+#                             , balcony_area="numeric(20,2)"
+#                             , elevator="bpchar(2)"
 #                           )
 #)
 
@@ -261,6 +267,7 @@ for(i in c(1:length(file_list))){
 #dbGetQuery(conn, "grant all on table ttemp.atul_rent_prc_of_real_estate to dw_dev_group")
 #dbGetQuery(conn, "grant all on table ttemp.atul_sell_prc_of_real_estate to dw_dev_group")
 
+#dbDisconnect(conn)
 
 
 #==================================================================#
