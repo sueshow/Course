@@ -4,10 +4,10 @@
 * Mann Kendall Trend Test：
   * 相關資料：https://github.com/sueshow/R_Data-Visualization
   * Code：Proj_Mann Kendall Tend Test.R
-* 參考資料
-  * Appendix Mann-Kendall Trend Tests
-  * https://www.statisticshowto.com/mann-kendall-trend-test/
-  * https://cran.r-project.org/web/packages/trend/vignettes/trend.pdf
+  * 參考資料
+    * Appendix Mann-Kendall Trend Tests
+    * https://www.statisticshowto.com/mann-kendall-trend-test/
+    * https://cran.r-project.org/web/packages/trend/vignettes/trend.pdf
 <br>
 
 ## 實價登錄資料：In R
