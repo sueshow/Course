@@ -150,6 +150,7 @@ for(i in 1:length(data_manual$word)){
 
 #其他
 data_manual[, "alley"] <- NA
+data_manual[, "road_alley"] <- NA
 data_manual[, "number"] <- NA
 data_manual[, "num_int"] <- NA
 for(i in 1:nrow(data_manual)){
@@ -158,8 +159,10 @@ for(i in 1:nrow(data_manual)){
   
   if(length(tmp)==0){
     data_manual$alley[i] <- NA
+    data_manual$road_alley[i] <- data_manual$road[i]
   }else{
     data_manual$alley[i] <- paste(tmp, collapse="")
+    data_manual$road_alley[i] <- paste0(data_manual$road[i], data_manual$alley[i])
   }
   
 #}
@@ -185,19 +188,27 @@ for(i in 1:nrow(data_manual)){
 }
 
 
-#去除「之X」，無法去除「之X~X」
+#去除「之X」，「之X~X」
 data_manual[, "num_int2"] <- NA
 for(i in 1:nrow(data_manual)){
-  tmp <- unlist( regmatches(data_manual$num_int[i], gregexpr("\\.*[之][[:digit:]]+", data_manual$num_int[i] )))
+  tmp01 <- unlist( regmatches(data_manual$num_int[i], gregexpr("\\.*[之][[:digit:]]+", data_manual$num_int[i] )))
+  tmp02 <- unlist( regmatches(data_manual$num_int[i], gregexpr("\\.*[之][[:digit:]]+[~][[:digit:]]+", data_manual$num_int[i] )))
   
-  if(length(tmp)!=0){
+  if(length(tmp01)!=0 && length(tmp02)==0){
     num_int <- data_manual$num_int[i]
-    for(j in 1:length(tmp)){
-      num <- sub(tmp[j], "", num_int)
+    for(j in 1:length(tmp01)){
+      num <- sub(tmp01[j], "", num_int)
       num_int <- num
     }
     data_manual$num_int2[i] <- paste( unlist(regmatches(num_int, gregexpr("[[:digit:]]+\\.*[[:digit:]]*", num_int ))), collapse="," )
-    
+  
+  }else if(length(tmp02)!=0){
+    num_int <- data_manual$num_int[i]
+    for(j in 1:length(tmp02)){
+      num <- sub(tmp02[j], "", num_int)
+      num_int <- num
+    }
+    data_manual$num_int2[i] <- paste( unlist(regmatches(num_int, gregexpr("[[:digit:]]+\\.*[[:digit:]]*", num_int ))), collapse="," )
   }else{
     data_manual$num_int2[i] <- paste( unlist(regmatches(data_manual$num_int[i], gregexpr("[[:digit:]]+\\.*[[:digit:]]*", data_manual$num_int[i] ))), collapse="," )
   }
@@ -211,52 +222,68 @@ for(i in 1:nrow(data_manual)){
 }
 
 
+#i <- 21
 #待確認
 data_manual[, "num_array"] <- NA
 for(i in 1:nrow(data_manual)){
   
   sn <- data_manual$sign[i]
-  tem <- unlist( strsplit(data_manual$number2s[i], ",") )
-  mn <- min( as.numeric(tmp) )
-  mx <- max( as.numeric(tmp) )
+  tmp <- unlist( strsplit(data_manual$num_int2[i], ",") )
+  tmp_dup <- tmp[!duplicated(tmp)]
+  #tmp_con <- ""
+  #for(i in 1:length(tmp_dup)){
+  #  if(i==1){
+  #    tmp_con <- paste0(tmp_dup[i])
+  #  }else{
+  #    tmp_con <- paste0(tmp_con, ",", tmp_dup[i])
+  #  }
+  #}
+   
+  mn <- min( as.numeric(tmp_dup) )
+  mx <- max( as.numeric(tmp_dup) )
   
   if(is.na(sn)){
-    if(length(tmp)==1){
-      data_manual$num_array[i] <- paste0( "[", tmp, "]" )
-    }else if(length(tmp)==2){
-      if(as.numeric(tmp[2]) <= as.numeric(tmp[1])){
-        data_manual$num_array[i] <- paste0( "[", tmp[1], "]" )
+    if(length(tmp_dup)==0){
+      data_manual$num_array[i] <- ""
+    }else if(length(tmp_dup)==1 ){
+      data_manual$num_array[i] <- paste0( "[", tmp_dup, "]" )
+    }else if(length(tmp_dup)==2){
+      if(as.numeric(tmp_dup[2]) <= as.numeric(tmp_dup[1])){
+        data_manual$num_array[i] <- paste0( "[", tmp_dup[1], "]" )
       }else{
         data_manual$num_array[i] <- paste0( "[", paste(seq(mn, mx, by=1), collapse=","), "]" )
       }
     }else{
-      data_manual$num_array[i] <- ifelse(data_manual$number2s[i]=="", NA, paste0( "[", data_manual$number2s[i], "]") )
+      data_manual$num_array[i] <- ifelse(data_manual$num_int2[i]=="", NA, paste0( "[", data_manual$num_int2[i], "]") )
     }
   }else{
-    if(length(tmp)==1){
-      data_manual$num_array[i] <- paste0( "[", tmp, "]" )
-    }else if{
-      
+    if(length(tmp_dup)==0){
+      data_manual$num_array[i] <- ""
+    }else if(length(tmp_dup)==1){
+      data_manual$num_array[i] <- paste0( "[", tmp_dup, "]" )
+    }else if(length(tmp_dup)==2){
+
       sn <- data_manual$sign[i]
-      data_manual$num_array[i] <- ifelse( sn=="單", paste0( "[", paste0(seq(mn, mx, by=2)), collapse=","), "]" ),
-                                       ifelse( sn=="雙", paste0( "[", paste0(seq(mn, mx, by=2)), collapse=","), "]" ),
-                                               ifelse( sn=="全", paste0( "[", paste0(seq(mn, mx, by=1)), collapse=","), "]" )
-                                                               , paste0("[", tmp, "]"))) )
+      data_manual$num_array[i] <- ifelse( sn=="單", paste0( "[", paste0(seq(mn, mx, by=2), collapse=","), "]" ),
+                                          ifelse( sn=="雙", paste0( "[", paste0(seq(mn, mx, by=2), collapse=","), "]" ),
+                                                  ifelse( sn=="全", paste0( "[", paste0(seq(mn, mx, by=1), collapse=","), "]") 
+                                                                  , paste0("[", tmp, "]"))) )
     }else{
-      data_manual$num_array[i] <- ifelse(data_manual$number2s[i]=="", NA, paste0("[", data_manual$number2s[i], "]") )
+      data_manual$num_array[i] <- ifelse(data_manual$num_int2[i]==0, NA, paste0("[", data_manual$num_int2[i], "]") )
     }
   }
 }
 
 
+colnames(data_manual)
 data_manual %>%
-  select( bldg_id, cns_county, cns_town, cns_addr, cns_fulladdr
-          , road, alley, number, road_oth, num_array ) -> final
+
+  select( bldg_id, bldg_nm, county, town, neighborhood, road_alley, number, road_oth, other, num_array ) -> final
 
 
 
 #==================================================================#
-#################### 正規劃後地址 ####################
+#################### 正規劃後地址 (NOT)####################
 #file_name <- "to_tgos.txt"
 file_name <- list.files( path, pattern="from_tgos.txt" )
 file_path <- file.path( getwd(), file_name )
