@@ -24,4 +24,8 @@
 <br>
 
 ## 解析 KML：In R
+* 與資料 Mapping
+  * Code：
+  * 參考資料：
+
 
