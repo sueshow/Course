@@ -1,3 +1,10 @@
+rm(list=ls())
+install.packages('sf')
+install.packages('leaflet')
+install.packages('sqldf')
+install.packages('RPostgreSQL')
+install.packages('sp')
+
 library(sf)
 library(leaflet)
 library(sqldf)
@@ -17,7 +24,15 @@ final$wgs84_long=as.double(final$wgs84_long)
 final$wgs84_lat=as.double(final$wgs84_lat)
 
 #匯入KML
-mitake <- st_read("D:/XXXXX/三竹特篩_LBS(20210426).kml")
+#確認檔案數
+first_file_name <- list.files("D:/michellechuang/Desktop/import_kml", "\\.kml{1,}")    
+length(first_file_name) 
+i <- 1
+file_name <- first_file_name[i]
+dir_file <- paste("D:/michellechuang/Desktop/import_kml/", file_name, sep = "")            #用paste命令構建路徑變數dir
+#匯入KML
+mitake <- st_read(dir_file)
+#mitake <- st_read("D:/XXXXX/三竹特篩_LBS(20210426).kml")
 
 #轉地圖格式
 mitake2 <- st_zm(mitake)
@@ -27,6 +42,33 @@ mitake3 = as(mitake2, 'Spatial')
 leaflet(mitake3) %>%
   addProviderTiles("CartoDB.Positron") %>%
   addPolygons(color = "green")
+
+#確認基站點(單區)
+bound <- 0.001  #100公尺
+xmin <- st_bbox(mitake)$xmin
+xmax <- st_bbox(mitake)$xmax
+ymin <- st_bbox(mitake)$ymin
+ymax <- st_bbox(mitake)$ymax
+final_test <- final[which((final[,9] >= xmin  - bound & final[,9] <= xmax + bound ) &
+                            (final[,10] >= ymin  - bound & final[,10]<= ymax  + bound )),]
+final_test
+
+#確認基站點(多區)
+bound <- 0.001  #100公尺
+xmin <- 120.3701
+xmax <- 120.3967
+ymin <- 23.92794
+ymax <- 23.94900
+final_test <- final[which((final[,9] >= xmin  - bound & final[,9] <= xmax + bound ) &
+                            (final[,10] >= ymin  - bound & final[,10]<= ymax  + bound )),]
+final_test
+
+leaflet(mitake3) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(color = "green") %>% 
+  addTiles() %>%
+  addMarkers(data=final_test, lat=~wgs84_lat, lng=~wgs84_long)
+
 
 #轉成 SpatialPointsDataFrame
 xy <- final[,c(9,10)]
