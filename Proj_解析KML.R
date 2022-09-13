@@ -55,10 +55,11 @@ final_test
 
 #確認基站點(多區)
 bound <- 0.001  #100公尺
-xmin <- 120.3701
-xmax <- 120.3967
-ymin <- 23.92794
-ymax <- 23.94900
+m <- 1
+xmin <- min(st_coordinates(mitake2)[which(st_coordinates(mitake2)[,4]==m),][,1])
+xmax <- max(st_coordinates(mitake2)[which(st_coordinates(mitake2)[,4]==m),][,1])
+ymin <- max(st_coordinates(mitake2)[which(st_coordinates(mitake2)[,4]==m),][,2])
+ymax <- max(st_coordinates(mitake2)[which(st_coordinates(mitake2)[,4]==m),][,2])
 final_test <- final[which((final[,9] >= xmin  - bound & final[,9] <= xmax + bound ) &
                             (final[,10] >= ymin  - bound & final[,10]<= ymax  + bound )),]
 final_test
