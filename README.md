@@ -39,3 +39,4 @@
 ## 參考資料 
 * [輕鬆學習 R 語言](https://eloquentr.datainpoint.com/webScraping.html)
 * [R 資料科學與統計](https://bookdown.org/jefflinmd38/r4biost/datainout.html)
+* [經濟資料視覺化處理](https://bookdown.org/tpemartin/108-1-ntpu-datavisualization/)
